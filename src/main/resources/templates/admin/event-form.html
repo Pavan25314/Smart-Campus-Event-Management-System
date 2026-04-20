@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${event.id == null ? 'Create Event' : 'Edit Event'} + ' | Admin'">Event Form</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+</head>
+<body style="background: #0f172a;">
+    <div class="container" style="max-width: 800px;">
+        <header>
+            <div class="logo">AdminPortal</div>
+            <a th:href="@{/admin/dashboard}" class="btn btn-outline" style="color: #fff; border-color: #fff;">Back to Dashboard</a>
+        </header>
+
+        <div class="glass" style="padding: 2.5rem; background: #fff;">
+            <h1 style="margin-bottom: 2rem;" th:text="${event.id == null ? 'Create New Event' : 'Edit Event'}">Event Form</h1>
+            
+            <form th:action="@{/admin/events/save}" th:object="${event}" method="post">
+                <input type="hidden" th:field="*{id}">
+                
+                <div class="form-group">
+                    <label>Event Title</label>
+                    <input type="text" th:field="*{title}" placeholder="Enter event title">
+                    <p class="error-msg" th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></p>
+                </div>
+
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea th:field="*{description}" rows="5" placeholder="Enter detailed description"></textarea>
+                    <p class="error-msg" th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></p>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                    <div class="form-group">
+                        <label>Date & Time</label>
+                        <input type="datetime-local" th:field="*{eventDate}">
+                        <p class="error-msg" th:if="${#fields.hasErrors('eventDate')}" th:errors="*{eventDate}"></p>
+                    </div>
+                    <div class="form-group">
+                        <label>Location</label>
+                        <input type="text" th:field="*{location}" placeholder="e.g. Auditorium B">
+                        <p class="error-msg" th:if="${#fields.hasErrors('location')}" th:errors="*{location}"></p>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                    <div class="form-group">
+                        <label>Department</label>
+                        <select th:field="*{department}">
+                            <option value="">Select Department</option>
+                            <option value="Computer Science">Computer Science</option>
+                            <option value="Arts">Arts</option>
+                            <option value="Engineering">Engineering</option>
+                            <option value="Management">Management</option>
+                        </select>
+                        <p class="error-msg" th:if="${#fields.hasErrors('department')}" th:errors="*{department}"></p>
+                    </div>
+                    <div class="form-group">
+                        <label>Event Type</label>
+                        <select th:field="*{type}">
+                            <option value="">Select Type</option>
+                            <option value="Workshop">Workshop</option>
+                            <option value="Seminar">Seminar</option>
+                            <option value="Cultural">Cultural</option>
+                        </select>
+                        <p class="error-msg" th:if="${#fields.hasErrors('type')}" th:errors="*{type}"></p>
+                    </div>
+                </div>
+
+                <div class="form-group" style="max-width: 200px;">
+                    <label>Capacity</label>
+                    <input type="number" th:field="*{capacity}" min="1">
+                    <p class="error-msg" th:if="${#fields.hasErrors('capacity')}" th:errors="*{capacity}"></p>
+                </div>
+
+                <div style="margin-top: 2rem;">
+                    <button type="submit" class="btn btn-primary" style="padding: 1rem 3rem;">Save Event</button>
+                    <a th:href="@{/admin/dashboard}" class="btn btn-outline" style="margin-left: 1rem;">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${event.title} + ' | Details'">Event Details</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <a th:href="@{/}" class="logo">CampusEvents</a>
+            <a th:href="@{/}" class="btn btn-outline">Back to Events</a>
+        </header>
+
+        <div style="display: grid; grid-template-columns: 3fr 2fr; gap: 3rem;">
+            <div class="glass" style="padding: 2rem;">
+                <span th:class="'event-tag tag-' + ${#strings.toLowerCase(event.type)}" th:text="${event.type}">Type</span>
+                <h1 style="margin: 1rem 0;" th:text="${event.title}">Event Title</h1>
+                <p style="white-space: pre-wrap; margin-bottom: 2rem;" th:text="${event.description}">Description</p>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; background: rgba(0,0,0,0.05); padding: 1rem; border-radius: var(--radius);">
+                    <div>
+                        <strong>Date & Time</strong>
+                        <p th:text="${#temporals.format(event.eventDate, 'dd MMMM yyyy, HH:mm')}">Date</p>
+                    </div>
+                    <div>
+                        <strong>Location</strong>
+                        <p th:text="${event.location}">Location</p>
+                    </div>
+                    <div>
+                        <strong>Department</strong>
+                        <p th:text="${event.department}">Department</p>
+                    </div>
+                    <div>
+                        <strong>Availability</strong>
+                        <p th:text="(${event.capacity} - ${event.registrationsCount}) + ' slots remaining'">Slots</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass" style="padding: 2rem;">
+                <h2 style="margin-bottom: 1.5rem;">Register Now</h2>
+                
+                <form th:action="@{/register}" th:object="${registration}" method="post">
+                    <input type="hidden" name="event.id" th:value="${event.id}">
+                    
+                    <div class="form-group">
+                        <label>Full Name</label>
+                        <input type="text" th:field="*{studentName}" placeholder="John Doe">
+                        <p class="error-msg" th:if="${#fields.hasErrors('studentName')}" th:errors="*{studentName}"></p>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Email Address</label>
+                        <input type="email" th:field="*{studentEmail}" placeholder="john@university.edu">
+                        <p class="error-msg" th:if="${#fields.hasErrors('studentEmail')}" th:errors="*{studentEmail}"></p>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Student ID</label>
+                        <input type="text" th:field="*{studentId}" placeholder="STUD12345">
+                        <p class="error-msg" th:if="${#fields.hasErrors('studentId')}" th:errors="*{studentId}"></p>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" style="width: 100%;" th:disabled="${event.full}">
+                        Register Now
+                    </button>
+                    
+                    <p th:if="${event.full}" class="error-msg" style="text-align: center; margin-top: 1rem;">
+                        This event is full. You cannot register.
+                    </p>
+                    
+                    <p th:if="${errorMessage}" class="error-msg" style="text-align: center; margin-top: 1rem;" th:text="${errorMessage}">
+                    </p>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

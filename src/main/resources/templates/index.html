@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Campus Events | Home</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">CampusEvents</div>
+            <nav>
+                <a th:href="@{/my-registrations}" class="btn btn-outline" style="margin-right: 1rem;">My Registrations</a>
+                <a th:href="@{/admin/dashboard}" class="btn btn-primary">Admin Portal</a>
+            </nav>
+        </header>
+
+        <section class="hero" style="text-align: center; margin-bottom: 3rem;">
+            <h1 style="font-size: 3rem; margin-bottom: 1rem; color: #fff;">Discover Campus Life</h1>
+            <p style="color: #cbd5e1; font-size: 1.2rem; margin-bottom: 2rem;">Register for workshops, seminars, and cultural events happening near you.</p>
+            
+            <div class="glass" style="max-width: 800px; margin: 0 auto; padding: 1rem; background: rgba(255,255,255,0.1);">
+                <form th:action="@{/}" method="get" style="display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center;">
+                    <select name="dept" style="width: auto; background: rgba(0,0,0,0.2); color: #fff; border: 1px solid rgba(255,255,255,0.2);">
+                        <option value="">All Departments</option>
+                        <option value="Computer Science">Computer Science</option>
+                        <option value="Engineering">Engineering</option>
+                        <option value="Arts">Arts</option>
+                    </select>
+                    <select name="type" style="width: auto; background: rgba(0,0,0,0.2); color: #fff; border: 1px solid rgba(255,255,255,0.2);">
+                        <option value="">All Types</option>
+                        <option value="Workshop">Workshop</option>
+                        <option value="Seminar">Seminar</option>
+                        <option value="Cultural">Cultural</option>
+                    </select>
+                    <button type="submit" class="btn btn-primary">Filter Events</button>
+                </form>
+            </div>
+        </section>
+
+        <div class="event-grid">
+            <div th:each="event : ${events}" class="event-card glass">
+                <span th:class="'event-tag tag-' + ${#strings.toLowerCase(event.type)}" th:text="${event.type}">Type</span>
+                <div th:if="${event.averageRating > 0}" style="font-size: 0.8rem; color: #fbbf24; margin-bottom: 0.5rem;">
+                    <span th:text="'⭐ ' + ${#numbers.formatDecimal(event.averageRating, 1, 1)}">4.5</span>
+                </div>
+                <h3 class="event-title" th:text="${event.title}">Event Title</h3>
+                <p class="event-info">
+                    <span th:text="${#temporals.format(event.eventDate, 'dd MMM yyyy, HH:mm')}">Date</span><br>
+                    <span th:text="${event.location}">Location</span> • <span th:text="${event.department}">Dept</span>
+                </p>
+                <div style="margin-top: auto;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                        <span style="font-size: 0.8rem;" th:text="${event.registrationsCount} + '/' + ${event.capacity} + ' Registered'">0/50</span>
+                        <div style="width: 60%; height: 6px; background: #e2e8f0; border-radius: 3px;">
+                            <div th:style="'width:' + (${event.registrationsCount} * 100 / ${event.capacity}) + '%; height: 100%; background: var(--primary); border-radius: 3px;'"></div>
+                        </div>
+                    </div>
+                    <a th:href="@{/events/{id}(id=${event.id})}" class="btn btn-primary" style="width: 100%;">View Details</a>
+                </div>
+            </div>
+            
+            <div th:if="${#lists.isEmpty(events)}" style="grid-column: 1/-1; text-align: center; padding: 3rem; color: #fff;">
+                <h3>No upcoming events found.</h3>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
